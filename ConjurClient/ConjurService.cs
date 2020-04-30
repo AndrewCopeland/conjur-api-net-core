@@ -15,7 +15,6 @@ namespace ConjurClient
         private Configuration _config { get; set; }
         private HttpClient _httpClient { get; set; }
         private Endpoints _endpoints { get; set; }
-        private SecureString _authorizationToken { get; set; }
 
         public ConjurService(Configuration config, HttpClient httpClient)
         {
@@ -123,7 +122,6 @@ namespace ConjurClient
             String base64AccessToken = Utilities.ToBase64String(Utilities.ToString(_config.AccessToken));
             return new AuthenticationHeaderValue("Token", String.Format("token=\"{0}\"", base64AccessToken));
         }
-
 
     }
 }
