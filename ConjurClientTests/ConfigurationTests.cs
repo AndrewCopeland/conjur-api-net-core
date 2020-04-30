@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Net;
 using System.Security;
 using ConjurClient;
@@ -11,99 +10,90 @@ namespace ConjurClientTests
     [TestClass]
     public class ConfigurationTests
     {
-        string applianceUrl = "https://conjur-master";
-        string authnUrl = "https://conjur-master/authn";
-        string account = "account";
-        string username = "host/test";
-        SecureString apiKey = new NetworkCredential("", "superSecretApiKey").SecurePassword;
-        SecureString accessToken = new NetworkCredential("", "superSecretAccessToken").SecurePassword;
-        static string invalidAccessTokenPath = @"../../../ConfigurationTests/invalid_access_token.txt";
-        static string validAccessTokenPath = @"../../../ConfigurationTests/valid_access_token.txt";
-        string content = File.ReadAllText(validAccessTokenPath);
 
         [TestMethod]
         public void TestConfigurationFullValid()
         {
-            var config = new Configuration(applianceUrl, authnUrl, account, username, apiKey);
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual(config.AuthnUrl, authnUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(config.Username, username);
-            Assert.AreEqual(config.ApiKey, apiKey);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual(config.AuthnUrl, TestConfig.AuthnUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(config.Username, TestConfig.Username);
+            Assert.AreEqual(config.ApiKey, TestConfig.ApiKey);
         }
 
         [TestMethod]
         public void TestConfigurationNoAuthnUrlValid()
         {
-            var config = new Configuration(applianceUrl, account, username, apiKey);
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual<string>(config.AuthnUrl, authnUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(config.Username, username);
-            Assert.AreEqual(config.ApiKey, apiKey);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual<string>(config.AuthnUrl, TestConfig.AuthnUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(config.Username, TestConfig.Username);
+            Assert.AreEqual(config.ApiKey, TestConfig.ApiKey);
         }
 
         [TestMethod]
         public void TestConfigurationAccessTokenValid()
         {
-            var config = new Configuration(applianceUrl, account, accessToken);
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(config.AccessToken, accessToken);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.Account, TestConfig.AccessToken);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(config.AccessToken, TestConfig.AccessToken);
         }
 
         [TestMethod]
         public void TestConfigurationAccessTokenAccessTokenPathContentValid()
         {
-            var config = new Configuration(applianceUrl, account, validAccessTokenPath);
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(config.AccessTokenPath, validAccessTokenPath);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.Account, TestConfig.ValidAccessTokenPath);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(config.AccessTokenPath, TestConfig.ValidAccessTokenPath);
             // comparing the password values as string instead of the actual secure string objects
             Assert.AreEqual(new NetworkCredential( "", config.AccessToken).Password,
-                new NetworkCredential("", content).Password);
+                new NetworkCredential("", TestConfig.ValidAccessTokenContent).Password);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestConfigurationApplianceUrlInvalid()
         {
-            _ = new Configuration(null, authnUrl, account, username, apiKey);
+            _ = new Configuration(null, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestConfigurationAccountInvalid()
         {
-            _ = new Configuration(applianceUrl, authnUrl, null, username, apiKey);
+            _ = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, null, TestConfig.Username, TestConfig.ApiKey);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestConfigurationUsernameInvalid()
         {
-            _ = new Configuration(applianceUrl, authnUrl, account, null, apiKey);
+            _ = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, null, TestConfig.ApiKey);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestConfigurationApiKeyInvalid()
         {
-            _ = new Configuration(applianceUrl, authnUrl, account, username, null);
+            _ = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestConfigurationAccessTokenApplianceUrlInvalid()
         {
-            _ = new Configuration(null, account, accessToken);
+            _ = new Configuration(null, TestConfig.Account, TestConfig.AccessToken);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestConfigurationAccessTokenAccountInvalid()
         {
-            _ = new Configuration(applianceUrl, null, accessToken);
+            _ = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.AccessToken);
         }
 
 
@@ -112,37 +102,36 @@ namespace ConjurClientTests
         public void TestConfigurationAccessTokenAccessTokenInvalid()
         {
             SecureString nullSecureString = null;
-            _ = new Configuration(applianceUrl, account, nullSecureString);
+            _ = new Configuration(TestConfig.ApplianceUrl, TestConfig.Account, nullSecureString);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationAccessTokenAccessTokenPathInvalid()
         {
-            _ = new Configuration(applianceUrl, account, "");
+            _ = new Configuration(TestConfig.ApplianceUrl, TestConfig.Account, "");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationAccessTokenAccessTokenPathContentsInvalid()
         {
-            _ = new Configuration(applianceUrl, account, invalidAccessTokenPath);
+            _ = new Configuration(TestConfig.ApplianceUrl, TestConfig.Account, TestConfig.InvalidAccessTokenPath);
         }
 
         [TestMethod]
         public void TestConfigurationFromEnvironmentValidAuthnLogin()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", applianceUrl);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", username);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", new NetworkCredential("", apiKey).Password);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.ApplianceUrl);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", TestConfig.Username);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", Utilities.ToString(TestConfig.ApiKey));
 
             Configuration config = Configuration.FromEnvironment();
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(config.Username, username);
-            Assert.AreEqual(new NetworkCredential("", config.ApiKey).Password,
-                new NetworkCredential("", apiKey).Password);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(config.Username, TestConfig.Username);
+            Assert.AreEqual(Utilities.ToString(config.ApiKey), Utilities.ToString(TestConfig.ApiKey));
         }
 
         [TestMethod]
@@ -150,9 +139,9 @@ namespace ConjurClientTests
         public void TestConfigurationFromEnvironmentInvalidApplianceUrl()
         {
             Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", "");
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", username);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", new NetworkCredential("", apiKey).Password);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", TestConfig.Username);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", Utilities.ToString(TestConfig.ApiKey));
 
             _ = Configuration.FromEnvironment();
         }
@@ -161,10 +150,10 @@ namespace ConjurClientTests
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationFromEnvironmentInvalidAccount()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.Account);
             Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", "");
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", username);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", new NetworkCredential("", apiKey).Password);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", TestConfig.Username);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", new NetworkCredential("", TestConfig.ApiKey).Password);
 
             _ = Configuration.FromEnvironment();
         }
@@ -173,10 +162,10 @@ namespace ConjurClientTests
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationFromEnvironmentInvalidUsername()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
             Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", "");
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", new NetworkCredential("", apiKey).Password);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", Utilities.ToString(TestConfig.ApiKey));
 
             _ = Configuration.FromEnvironment();
         }
@@ -185,9 +174,9 @@ namespace ConjurClientTests
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationFromEnvironmentInvalidApiKey()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", username);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}", TestConfig.Username);
             Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}", "");
 
             _ = Configuration.FromEnvironment();
@@ -196,23 +185,23 @@ namespace ConjurClientTests
         [TestMethod]
         public void TestConfigurationFromEnvironmentValidAccessToken()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", applianceUrl);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN}", new NetworkCredential("", accessToken).Password);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.ApplianceUrl);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN}", new NetworkCredential("", TestConfig.AccessToken).Password);
 
             Configuration config = Configuration.FromEnvironment();
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(new NetworkCredential("", config.AccessToken).Password,
-                new NetworkCredential("", accessToken).Password);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(Utilities.ToString(config.AccessToken),
+                Utilities.ToString(TestConfig.AccessToken));
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationFromEnvironmentInvalidAccessToken()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", applianceUrl);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.ApplianceUrl);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
             Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN}", "");
 
             _ = Configuration.FromEnvironment();
@@ -221,25 +210,25 @@ namespace ConjurClientTests
         [TestMethod]
         public void TestConfigurationFromEnvironmentValidAccessTokenPath()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", applianceUrl);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN_FILE}", validAccessTokenPath);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.ApplianceUrl);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN_FILE}", TestConfig.ValidAccessTokenPath);
 
             Configuration config = Configuration.FromEnvironment();
-            Assert.AreEqual(config.ApplianceUrl, applianceUrl);
-            Assert.AreEqual(config.Account, account);
-            Assert.AreEqual(config.AccessTokenPath, validAccessTokenPath);
-            Assert.AreEqual(new NetworkCredential("", config.AccessToken).Password,
-                new NetworkCredential("", content).Password);
+            Assert.AreEqual(config.ApplianceUrl, TestConfig.ApplianceUrl);
+            Assert.AreEqual(config.Account, TestConfig.Account);
+            Assert.AreEqual(config.AccessTokenPath, TestConfig.ValidAccessTokenPath);
+            Assert.AreEqual(Utilities.ToString(config.AccessToken),
+                TestConfig.ValidAccessTokenContent);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidConfigurationException))]
         public void TestConfigurationFromEnvironmentInvalidAccessTokenPath()
         {
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", applianceUrl);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", account);
-            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN_FILE}", invalidAccessTokenPath);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_APPLIANCE_URL}", TestConfig.ApplianceUrl);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_ACCOUNT}", TestConfig.Account);
+            Environment.SetEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_TOKEN_FILE}", TestConfig.InvalidAccessTokenPath);
 
             _ = Configuration.FromEnvironment();
         }
