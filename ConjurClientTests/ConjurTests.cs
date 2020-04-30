@@ -1,6 +1,4 @@
-using System;
-using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Security;
 using ConjurClient;
 using ConjurClient.Exceptions;
@@ -12,32 +10,22 @@ namespace ConjurClientTests
     [TestClass]
     public class ConjurTests
     {
-        string applianceUrl = "https://conjur-master";
-        string authnUrl = "https://conjur-master/authn";
-        string account = "conjur";
-        string username = "admin";
-        SecureString apiKey = Utilities.ToSecureString("35a9ej72v0q8ek25fghn52g1rjvm29qwxv738ts71j2d5hdwk1s34fbn");
-        SecureString accessToken = Utilities.ToSecureString("superSecretAccessToken");
-        static string invalidAccessTokenPath = String.Format("..{0}..{0}..{0}ConfigurationTests{0}invalid_access_token.txt", Path.DirectorySeparatorChar);
-        static string validAccessTokenPath = String.Format("..{0}..{0}..{0}ConfigurationTests{0}valid_access_token.txt", Path.DirectorySeparatorChar);
-        string content = File.ReadAllText(validAccessTokenPath);
-
 
         [TestMethod]
         public void TestValidConjurInfo()
         {
-            var config = new Configuration(applianceUrl, authnUrl, account, username, apiKey, true);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
             Conjur conjur = new Conjur(config);
             JObject info = conjur.GetInfo();
             string conjurAccount = info.SelectToken(".configuration.conjur.account").ToString();
 
-            Assert.AreEqual(account, conjurAccount);
+            Assert.AreEqual(TestConfig.Account, conjurAccount);
         }
 
         [TestMethod]
         public void TestValidConjurHealth()
         {
-            var config = new Configuration(applianceUrl, authnUrl, account, username, apiKey, true);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
             Conjur conjur = new Conjur(config);
             JObject health = conjur.GetHealth();
             string uiService = health.SelectToken(".services.ui").ToString();
@@ -48,7 +36,7 @@ namespace ConjurClientTests
         [TestMethod]
         public void TestValidConjurAuthenticate()
         {
-            var config = new Configuration(applianceUrl, authnUrl, account, username, apiKey, true);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
             Conjur conjur = new Conjur(config);
             conjur.Authenticate();
         }
@@ -58,7 +46,7 @@ namespace ConjurClientTests
         public void TestInvalidConjurAuthenticate()
         {
             var invalidApiKey = Utilities.ToSecureString("invalidApiKey");
-            var config = new Configuration(applianceUrl, authnUrl, account, username, invalidApiKey, true);
+            var config = new Configuration(TestConfig.ApplianceUrl, TestConfig.AuthnUrl, TestConfig.Account, TestConfig.Username, invalidApiKey, true);
             Conjur conjur = new Conjur(config);
             conjur.Authenticate();
         }
@@ -66,10 +54,75 @@ namespace ConjurClientTests
         [TestMethod]
         public void TestValidConjurRetrieveSecret()
         {
-            var config = new Configuration(applianceUrl, null, account, username, apiKey, true);
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
             Conjur conjur = new Conjur(config);
             conjur.Authenticate();
             conjur.RetrieveSecret("path/to/secret");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConjurResourceNotFoundException))]
+        public void TestInvalidConjurRetrieveSecret()
+        {
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
+            Conjur conjur = new Conjur(config);
+            conjur.Authenticate();
+            conjur.RetrieveSecret("path/to/secret/not/real");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConjurAuthorizationException))]
+        public void TestInvalidConjurRetrieveSecretApiKey()
+        {
+            var invalidApiKey = Utilities.ToSecureString("invalidApiKey");
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, invalidApiKey, true);
+            Conjur conjur = new Conjur(config);
+            conjur.Authenticate();
+            conjur.RetrieveSecret("path/to/secret");
+        }
+
+        [TestMethod]
+        public void TestConjurAddSecretValid()
+        {
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
+            Conjur conjur = new Conjur(config);
+            conjur.Authenticate();
+            string secretPath = "add/value/of/secret";
+            conjur.AddSecret(secretPath, Utilities.ToSecureString("newSecret"));
+            SecureString secretValue = conjur.RetrieveSecret(secretPath);
+            Assert.AreEqual(Utilities.ToString(secretValue), "newSecret");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConjurResourceNotFoundException))]
+        public void TestConjurAddSecretInvalidVariableId()
+        {
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
+            Conjur conjur = new Conjur(config);
+            conjur.Authenticate();
+            string secretPath = "add/value/of/secret/invalid";
+            conjur.AddSecret(secretPath, Utilities.ToSecureString("newSecret"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpRequestException))]
+        public void TestConjurAddSecretInvalidSecretValue()
+        {
+            // return 422 when empty secret value
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
+            Conjur conjur = new Conjur(config);
+            conjur.Authenticate();
+            string secretPath = "add/value/of/secret";
+            conjur.AddSecret(secretPath, Utilities.ToSecureString(""));
+        }
+
+        [TestMethod]
+        public void TestConjurListResourcesValid()
+        {
+            var config = new Configuration(TestConfig.ApplianceUrl, null, TestConfig.Account, TestConfig.Username, TestConfig.ApiKey, true);
+            Conjur conjur = new Conjur(config);
+            conjur.Authenticate();
+            conjur.ListResources();
         }
     }
 }
