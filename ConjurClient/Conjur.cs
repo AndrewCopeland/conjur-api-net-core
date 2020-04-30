@@ -27,7 +27,6 @@ namespace ConjurClient
             _conjurService = new ConjurService(_config, httpClient);
         }
 
-
         public JObject GetInfo()
         {
             return _conjurService.GetInfo();
@@ -43,9 +42,24 @@ namespace ConjurClient
             _config.AccessToken = _conjurService.Authenticate();
         }
 
-        public String RetrieveSecret(string variableId)
+        public SecureString RetrieveSecret(string variableId)
         {
-            return _conjurService.RetrieveSecret(variableId);
+            return Utilities.ToSecureString(_conjurService.RetrieveSecret(variableId));
+        }
+
+        public void AddSecret(string variableId, SecureString secretValue)
+        {
+            _conjurService.AddSecret(variableId, Utilities.ToString(secretValue));
+        }
+
+        public JArray ListResources()
+        {
+            return this.ListResources(null, null);
+        }
+
+        public JArray ListResources(string kind, string search)
+        {
+            return _conjurService.ListResources(kind, search);
         }
 
         private static HttpClient getDefaultHttpClient(Configuration config)
