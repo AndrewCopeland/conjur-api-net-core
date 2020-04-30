@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 using ConjurClient.Exceptions;
 using Newtonsoft.Json.Linq;
 
@@ -61,6 +60,24 @@ namespace ConjurClient
             return secretValue;
         }
 
+        public void AddSecret(string variableId, string secretValue)
+        {
+            String endpoint = _endpoints.AddSecret(variableId);
+            HttpMethod method = HttpMethod.Post;
+            String body = secretValue;
+
+            sendHttpRequest(endpoint, method, true, body);
+        }
+
+        public JArray ListResources(string kind, string search)
+        {
+            String endpoint = _endpoints.ListResources(kind, search);
+            HttpMethod method = HttpMethod.Get;
+            String body = null;
+
+            return Utilities.ToJArray(sendHttpRequest(endpoint, method, true, body));
+        }
+
         private String sendHttpRequest(String endpoint)
         {
             return sendHttpRequest(endpoint, HttpMethod.Get, false, null);
@@ -69,7 +86,9 @@ namespace ConjurClient
         private String sendHttpRequest(String endpoint, HttpMethod method, Boolean accessToken, String data)
         {
             HttpRequestMessage request = new HttpRequestMessage(method, endpoint);
-            if (accessToken)
+
+            // add access token header if not already added
+            if (accessToken && !_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             {
                 // _httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
                 String base64AccessToken = Utilities.ToBase64String(Utilities.ToString(_config.AccessToken));
