@@ -27,5 +27,10 @@ namespace ConjurClient
         {
             return JObject.Parse(content);
         }
+
+        public static JArray ToJArray(string content)
+        {
+            return JArray.Parse(content);
+        }
     }
 }
