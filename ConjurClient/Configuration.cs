@@ -156,7 +156,6 @@ namespace ConjurClient
                 ignoreSSL = true;
             }
 
-
             // Check if access token or access token path is being used
             if (accessToken != null)
             {
