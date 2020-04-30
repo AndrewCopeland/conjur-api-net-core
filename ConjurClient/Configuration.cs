@@ -118,7 +118,7 @@ namespace ConjurClient
             }
 
             // convert access token into a secure string
-            SecureString accessTokenSecure = new NetworkCredential("", accessToken).SecurePassword;
+            SecureString accessTokenSecure = Utilities.ToSecureString(accessToken);
             // clear access token as string
             accessToken = null;
 
@@ -160,7 +160,7 @@ namespace ConjurClient
             // Check if access token or access token path is being used
             if (accessToken != null)
             {
-                SecureString accessTokenSecure = new NetworkCredential("", accessToken).SecurePassword;
+                SecureString accessTokenSecure = Utilities.ToSecureString(accessToken);
                 accessToken = null;
                 return new Configuration(applianceUrl, account, accessTokenSecure, ignoreSSL);
             }
@@ -174,7 +174,7 @@ namespace ConjurClient
             String authnLogin = getRequiredEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}");
             String apiKey = getRequiredEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}");
             String authnUrl = getEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_URL}");
-            SecureString apiKeySecure = new NetworkCredential("", apiKey).SecurePassword;
+            SecureString apiKeySecure = Utilities.ToSecureString(apiKey);
             apiKey = null;
 
             return new Configuration(applianceUrl, authnUrl, account, authnLogin, apiKeySecure, ignoreSSL);
