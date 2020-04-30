@@ -14,7 +14,7 @@ namespace ConjurClient
 
         public String Authenticate()
         {
-            string baseAuthnUrl = _config.AuthnUrl.Replace(_config.ApplianceUrl + "/", "") + "/" + _config.Account;
+            string baseAuthnUrl = _config.AuthnUrl.Replace(_config.ApplianceUrl, "") + "/" + _config.Account;
             return String.Format($"{baseAuthnUrl}/{_config.Account}/{WebUtility.UrlEncode(_config.Username)}/authenticate");
         }
 
