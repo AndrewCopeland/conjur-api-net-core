@@ -1,5 +1,4 @@
-﻿using System;
-namespace ConjurClient
+﻿namespace ConjurClient
 {
     public enum ConfigurationEnvironmentVariables
     {
