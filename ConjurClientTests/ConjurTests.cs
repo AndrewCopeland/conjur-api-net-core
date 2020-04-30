@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Security;
@@ -17,8 +18,8 @@ namespace ConjurClientTests
         string username = "admin";
         SecureString apiKey = Utilities.ToSecureString("35a9ej72v0q8ek25fghn52g1rjvm29qwxv738ts71j2d5hdwk1s34fbn");
         SecureString accessToken = Utilities.ToSecureString("superSecretAccessToken");
-        static string invalidAccessTokenPath = @"../../../ConfigurationTests/invalid_access_token.txt";
-        static string validAccessTokenPath = @"../../../ConfigurationTests/valid_access_token.txt";
+        static string invalidAccessTokenPath = String.Format("..{0}..{0}..{0}ConfigurationTests{0}invalid_access_token.txt", Path.DirectorySeparatorChar);
+        static string validAccessTokenPath = String.Format("..{0}..{0}..{0}ConfigurationTests{0}valid_access_token.txt", Path.DirectorySeparatorChar);
         string content = File.ReadAllText(validAccessTokenPath);
 
 
