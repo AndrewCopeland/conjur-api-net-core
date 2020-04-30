@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConjurClient", "ConjurClient\ConjurClient.csproj", "{19ACFE9D-4A1A-49D8-9086-6CC99E708717}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConjurClientTests", "ConjurClientTests\ConjurClientTests.csproj", "{582652A9-6965-4AF6-9137-57A1228487B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19ACFE9D-4A1A-49D8-9086-6CC99E708717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19ACFE9D-4A1A-49D8-9086-6CC99E708717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19ACFE9D-4A1A-49D8-9086-6CC99E708717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19ACFE9D-4A1A-49D8-9086-6CC99E708717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{582652A9-6965-4AF6-9137-57A1228487B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{582652A9-6965-4AF6-9137-57A1228487B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{582652A9-6965-4AF6-9137-57A1228487B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{582652A9-6965-4AF6-9137-57A1228487B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
