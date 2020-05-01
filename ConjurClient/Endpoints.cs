@@ -42,6 +42,12 @@ namespace ConjurClient
             return resourceEndpoint;
         }
 
+        public String LoadPolicy (string policyId)
+        {
+            policyId = WebUtility.UrlEncode(policyId);
+            return $"/policies/{_config.Account}/policy/{policyId}";
+        }
+
         public String Info()
         {
             return "/info";
