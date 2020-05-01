@@ -83,6 +83,17 @@ namespace ConjurClientTests
 
             Assert.AreEqual(receivedEndpoint, expectedEndpoint);
         }
+
+        [TestMethod]
+        public void TestEndpointsLoadPolicy()
+        {
+            // Only 1 url for loading policy because difference between update, append and replace is just http method
+            string policyId = "non/root/policy";
+            string receivedEndpoint = TestConfig.ValidEndpoints.LoadPolicy(policyId);
+            string expectedEndpoint = $"/policies/{TestConfig.Account}/policy/{WebUtility.UrlEncode(policyId)}";
+
+            Assert.AreEqual(receivedEndpoint, expectedEndpoint);
+        }
     }
 }
 
