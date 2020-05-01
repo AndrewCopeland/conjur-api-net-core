@@ -78,6 +78,33 @@ namespace ConjurClient
             return Utilities.ToJArray(sendHttpRequest(endpoint, method, true, body));
         }
 
+        public JObject AppendPolicy(string policyId, string policyContent)
+        {
+            String endpoint = _endpoints.LoadPolicy(policyId);
+            HttpMethod method = HttpMethod.Post;
+            String body = policyContent;
+
+            return Utilities.ToJObject(sendHttpRequest(endpoint, method, true, body));
+        }
+
+        public JObject ReplacePolicy(string policyId, string policyContent)
+        {
+            String endpoint = _endpoints.LoadPolicy(policyId);
+            HttpMethod method = HttpMethod.Put;
+            String body = policyContent;
+
+            return Utilities.ToJObject(sendHttpRequest(endpoint, method, true, body));
+        }
+
+        public JObject UpdatePolicy(string policyId, string policyContent)
+        {
+            String endpoint = _endpoints.LoadPolicy(policyId);
+            HttpMethod method = HttpMethod.Patch;
+            String body = policyContent;
+
+            return Utilities.ToJObject(sendHttpRequest(endpoint, method, true, body));
+        }
+
         private String sendHttpRequest(String endpoint)
         {
             return sendHttpRequest(endpoint, HttpMethod.Get, false, null);
