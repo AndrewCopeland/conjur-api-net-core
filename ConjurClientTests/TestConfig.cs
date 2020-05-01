@@ -15,7 +15,9 @@ namespace ConjurClientTests
         public static string InvalidAccessTokenPath = String.Format("..{0}..{0}..{0}ConfigurationTests{0}invalid_access_token.txt", Path.DirectorySeparatorChar);
         public static string ValidAccessTokenPath = String.Format("..{0}..{0}..{0}ConfigurationTests{0}valid_access_token.txt", Path.DirectorySeparatorChar);
         public static string ValidAccessTokenContent = File.ReadAllText(ValidAccessTokenPath);
-        public static Configuration ValidConfig = new Configuration(ApplianceUrl, AuthnUrl, Account, Username, ApiKey);
+        public static Configuration ValidConfig = new Configuration(ApplianceUrl, AuthnUrl, Account, Username, ApiKey, true);
         public static Endpoints ValidEndpoints = new Endpoints(ValidConfig);
+        public static string ValidPolicyId = "root";
+        public static string ValidPolicyContent = "- !variable path/to/secret \n- !variable add/value/of/secret";
     }
 }
