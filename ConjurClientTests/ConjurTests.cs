@@ -124,6 +124,36 @@ namespace ConjurClientTests
             conjur.Authenticate();
             conjur.ListResources();
         }
+
+        [TestMethod]
+        public void TestConjurAppendPolicyValid()
+        {
+            Conjur conjur = new Conjur(TestConfig.ValidConfig);
+            conjur.Authenticate();
+            conjur.AppendPolicy(TestConfig.ValidPolicyId, TestConfig.ValidPolicyContent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConjurResourceNotFoundException))]
+        public void TestConjurAppendPolicyInvalidPolicyBranch()
+        {
+            Conjur conjur = new Conjur(TestConfig.ValidConfig);
+            conjur.Authenticate();
+            conjur.AppendPolicy("INVALID", TestConfig.ValidPolicyContent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpRequestException))]
+        public void TestConjurAppendPolicyInvalidPolicyContent()
+        {
+            // 422 is returned when invalid policy
+            Conjur conjur = new Conjur(TestConfig.ValidConfig);
+            conjur.Authenticate();
+            conjur.AppendPolicy(TestConfig.ValidPolicyId, "notValidYaml");
+        }
+
+
+
     }
 }
 
