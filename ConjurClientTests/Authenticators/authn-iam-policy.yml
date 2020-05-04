@@ -1,0 +1,16 @@
+﻿- !policy
+  id: conjur/authn-iam/test
+  body:
+  - !webservice
+  - !group
+  - !permit
+    role: !group
+    resource: !webservice
+    privileges: [ read, authenticate ]
+
+- &iam-hosts
+  - !host 622705945757/ubuntu-client-conjur-identity
+
+- !grant
+  role: !group conjur/authn-iam/test
+  members: *iam-hosts 

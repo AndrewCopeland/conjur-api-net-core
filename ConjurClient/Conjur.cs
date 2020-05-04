@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Security;
+using ConjurClient.Resources;
 using Newtonsoft.Json.Linq;
 
 namespace ConjurClient
@@ -117,7 +118,7 @@ namespace ConjurClient
         /// </code>
         /// </example>
         /// </summary>
-        public JArray ListResources()
+        public List<Resource> ListResources()
         {
             return ListResources(null, null);
         }
@@ -137,9 +138,15 @@ namespace ConjurClient
         /// <param name="search">
         /// the search string.
         /// </param>
-        public JArray ListResources(string kind, string search)
+        public List<Resource> ListResources(string kind, string search)
         {
-            return _conjurService.ListResources(kind, search);
+            JArray jsonResources = _conjurService.ListResources(kind, search);
+            List<Resource> resources = new List<Resource>();
+            foreach (JObject jsonResource in jsonResources)
+            {
+                resources.Add(new Resource(jsonResource));
+            }
+            return resources;
         }
 
 

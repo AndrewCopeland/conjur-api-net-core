@@ -15,9 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ConjurClient\ConjurClient.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ConfigurationTests\" />
-    <Folder Include="Authenticators\" />
+    <ProjectReference Include="..\ConjurClientTests\ConjurClientTests.csproj" />
   </ItemGroup>
 </Project>
