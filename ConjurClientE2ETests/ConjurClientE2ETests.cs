@@ -3,6 +3,7 @@ using ConjurClient;
 using ConjurClient.Resources;
 using System.Collections.Generic;
 using System;
+using System.Security;
 
 namespace ConjurClientE2ETests
 {
@@ -32,7 +33,8 @@ namespace ConjurClientE2ETests
                 Console.WriteLine("Printing out all variable resources");
                 if (r.Kind == ResourceKind.variable)
                 {
-                    Console.WriteLine("Variable ID: {0}", r.Id);
+                    SecureString value = conjur.RetrieveSecret(r.Id);
+                    Console.WriteLine("{0} value is {1}", r.Id, Utilities.ToString(value));
                 }
             }
         }
