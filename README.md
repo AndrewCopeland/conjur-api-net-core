@@ -51,9 +51,51 @@ namespace YourAppNamespace
     }
 }
 ```
+# Authentication
+The following example will show how to use different Conjur authenticators.
+
+### authn
+When using a standard authentication you just need to set the following environment variables:
+```bash
+export CONJUR_APPLIANCE_URL="https://conjur-follower"
+export CONJUR_ACCOUNT="myConjurAccount"
+export CONJUR_AUTHN_LOGIN="host/app1"
+export CONJUR_AUTHN_API_KEY="35a9ej72v0q8ek25fghn52g1rjvm29qwxv738ts71j2d5hdwk1s34fbn"
+# set to 'yes' if conjur instance is using a self-signed certificate
+export CONJUR_IGNORE_UNTRUSTED_SSL=no
+```
+
+### authn-iam
+`authn-iam` authentication is slightly different since a request header needs to be created at runtime. 
+
+```bash
+export CONJUR_APPLIANCE_URL="https://conjur-follower"
+export CONJUR_AUTHN_URL="https://conjur-follower/authn-iam/prod"
+export CONJUR_ACCOUNT="myConjurAccount"
+export CONJUR_AUTHN_LOGIN="host/awsApp1/8837277729373/iam-role-name"
+# set to 'yes' if conjur instance is using a self-signed certificate
+export CONJUR_IGNORE_UNTRUSTED_SSL=no
+```
+
+Now we can init the Conjur configuration from environment and then set the api key to the AWS request header.
+```c#
+Configuration config = Configuration.FromEnvironment();
+config.ApiKey = AuthnIAMHelper.GetAuthenticationRequest("Your AWS access key", "Your AWS secret access key", "Your AWS token");
+Conjur c = new Conjur(config);
+c.Authenticate();
+```
+
+### authn-k8s
+When using `authn-k8s` there should be a side car container that has already authenticated. In this case all you need to do is point to the file in which the Conjur access token has been mounted to. Set the following environment variables for the k8s container:
+
+```bash
+export CONJUR_APPLIANCE_URL="https://conjur-follower"
+export CONJUR_ACCOUNT="myConjurAccount"
+export CONJUR_AUTHN_TOKEN_FILE="/run/conjur/conjur-access-token"
+```
 
 # Usage
-The following methods can be used:
+The following methods can be used on the Conjur object after initializing.
 
 ### Authenticate()
 This method will authenticate to conjur. Conjur client access token is refreshed.
