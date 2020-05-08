@@ -41,12 +41,12 @@ namespace YourAppNamespace
             Environment.SetEnvironmentVariable("CONJUR_IGNORE_UNTRUSTED_SSL", "yes");
 
             Conjur conjur = new Conjur();
-			// Authenticate the conjur client
+            // Authenticate the conjur client
             conjur.Authenticate();
 
-			// Retrieve a specific secret
-			SecureString secretValue = conjur.RetrieveSecret("db/secret");
-			Console.WriteLine("Secret Value: {0}", Utilities.ToString(secretValue));
+            // Retrieve a specific secret
+            SecureString secretValue = conjur.RetrieveSecret("db/secret");
+            Console.WriteLine("Secret Value: {0}", Utilities.ToString(secretValue));
         }
     }
 }
