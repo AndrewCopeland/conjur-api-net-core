@@ -68,7 +68,7 @@ This method will retrieve a secret from conjur. Secret is returned as a SecureSt
 
 ```c#
 Conjur c = new Conjur();
-a.Authenticate();
+c.Authenticate();
 c.RetrieveSecret("db/postgres/password");
 ```
 
