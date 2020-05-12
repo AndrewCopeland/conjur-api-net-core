@@ -171,7 +171,8 @@ namespace ConjurClient
             // since not using an access token
             // assume api key or alterntive authentication method
             String authnLogin = getRequiredEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_LOGIN}");
-            String apiKey = getRequiredEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}");
+            // String apiKey = getRequiredEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}");
+            String apiKey = getEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_API_KEY}");
             String authnUrl = getEnvironmentVariable($"{ConfigurationEnvironmentVariables.CONJUR_AUTHN_URL}");
             SecureString apiKeySecure = Utilities.ToSecureString(apiKey);
             apiKey = null;
