@@ -105,7 +105,7 @@ namespace ConjurClient.Authenticators
         }
 
         // Is used for unit tests
-        public static SecureString GetAuthenticationRequest(String accessKey, String secretKey, String sessionToken, DateTime now)
+        public static String GetAuthenticationRequest(String accessKey, String secretKey, String sessionToken, DateTime now)
         {
             String amzdate = GetAmzDate(now);
             String datestamp = GetDate(now);
@@ -121,10 +121,10 @@ namespace ConjurClient.Authenticators
             byte[] signingKey = GetSignatureKey(secretKey, datestamp, REGION, SERVICE);
             signature = SignString(stringToSign, signingKey);
             String authorizationHeader = GetAuthorizationHeader(accessKey, GetCredentialScope(datestamp), SIGNED_HEADERS, signature);
-            return Utilities.AsSecureString(HeaderAsJsonString(amzdate, sessionToken, payloadHash, authorizationHeader));
+            return HeaderAsJsonString(amzdate, sessionToken, payloadHash, authorizationHeader);
         }
 
-        public static SecureString GetAuthenticationRequest(String accessKey, String secretKey, String sessionToken)
+        public static String GetAuthenticationRequest(String accessKey, String secretKey, String sessionToken)
         {
             return GetAuthenticationRequest(accessKey, secretKey, sessionToken, DateTime.UtcNow);
         }
