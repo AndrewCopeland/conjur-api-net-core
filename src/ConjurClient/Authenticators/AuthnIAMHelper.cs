@@ -121,7 +121,7 @@ namespace ConjurClient.Authenticators
             byte[] signingKey = GetSignatureKey(secretKey, datestamp, REGION, SERVICE);
             signature = SignString(stringToSign, signingKey);
             String authorizationHeader = GetAuthorizationHeader(accessKey, GetCredentialScope(datestamp), SIGNED_HEADERS, signature);
-            return AsString(HeaderAsJsonString(amzdate, sessionToken, payloadHash, authorizationHeader);
+            return HeaderAsJsonString(amzdate, sessionToken, payloadHash, authorizationHeader);
         }
 
         public static String GetAuthenticationRequest(String accessKey, String secretKey, String sessionToken)
